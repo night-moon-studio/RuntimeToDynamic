@@ -120,7 +120,7 @@ runtime.AddValue("test",func):
 
 var func = runtime.DelegateHandler.Func<string,int>(
 
-@"if( arg = \"小明\" ) 
+@"if( arg = \"小明\" )
 { 
       return 100; 
 }
