@@ -1,0 +1,2 @@
+# RuntimeToDynamic
+将运行时数据存储在动态生成的静态代码中
