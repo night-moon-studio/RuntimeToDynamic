@@ -5,7 +5,7 @@ using System.Text;
 namespace Natasha.RuntimeToDynamic
 {
 
-    public class BaseRTD : NHandler
+    public class BaseRTD<T> : RTDHandler where T : BaseRTD<T>, new()
     {
 
         public NClass Builder;
@@ -27,6 +27,94 @@ namespace Natasha.RuntimeToDynamic
 
 
 
+
+        #region 指定字符串域创建以及参数
+        public static T Create(string domainName, ComplierResultTarget target = ComplierResultTarget.Stream, ComplierResultError error = ComplierResultError.None)
+        {
+
+            return Create(domainName, error, target);
+
+        }
+
+        public static T Create(string domainName, ComplierResultError error, ComplierResultTarget target = ComplierResultTarget.Stream)
+        {
+
+            if (domainName == default || domainName.ToLower() == "default")
+            {
+                return Create(DomainManagment.Default, target, error);
+            }
+            else
+            {
+                return Create(DomainManagment.Create(domainName), target, error);
+            }
+
+        }
+        #endregion
+        #region 指定域创建以及参数
+        public static T Create(AssemblyDomain domain, ComplierResultError error, ComplierResultTarget target = ComplierResultTarget.Stream)
+        {
+
+            return Create(domain, target, error);
+
+        }
+
+        public static T Create(AssemblyDomain domain, ComplierResultTarget target = ComplierResultTarget.Stream, ComplierResultError error = ComplierResultError.None)
+        {
+
+            T instance = new T();
+            instance.Builder.Complier.EnumCRError = error;
+            instance.Builder.Complier.EnumCRTarget = target;
+            instance.Builder.Complier.Domain = domain;
+            return instance;
+
+        }
+        #endregion
+        #region  Default 默认域创建以及参数
+        public static T Default()
+        {
+
+            return Create(DomainManagment.Default, ComplierResultTarget.Stream);
+
+        }
+
+        public static T Default(ComplierResultError error, ComplierResultTarget target = ComplierResultTarget.Stream)
+        {
+
+            return Create(DomainManagment.Default, target, error);
+
+        }
+
+        public static T Default(ComplierResultTarget target, ComplierResultError error = ComplierResultError.None)
+        {
+
+            return Create(DomainManagment.Default, target, error);
+
+        }
+        #endregion
+        #region 随机域创建以及参数
+        public static T Random()
+        {
+
+            return Create(DomainManagment.Random, ComplierResultTarget.Stream);
+
+        }
+
+
+        public static T Random(ComplierResultError error, ComplierResultTarget target = ComplierResultTarget.Stream)
+        {
+
+            return Create(DomainManagment.Random, target, error);
+
+        }
+
+
+        public static T Random(ComplierResultTarget target, ComplierResultError error = ComplierResultError.None)
+        {
+
+            return Create(DomainManagment.Random, target, error);
+
+        }
+        #endregion
 
 
 
@@ -66,7 +154,7 @@ namespace Natasha.RuntimeToDynamic
 
 
 
-        public BaseRTD Static()
+        public BaseRTD<T> Static()
         {
 
             Builder.OopModifier( Natasha.Reverser.Model.Modifiers.Static);
@@ -139,7 +227,7 @@ namespace Natasha.RuntimeToDynamic
 
 
             var result = Builder.OopBody(methodBuilder).GetType();
-            var action = NDomainHandler.Action<ConcurrentDictionary<string, object>>($"{Builder.OopNameScript}.SetObject(obj);", Builder.NamespaceScript);
+            var action = DelegateHandler.Action<ConcurrentDictionary<string, object>>($"{Builder.OopNameScript}.SetObject(obj);", Builder.NamespaceScript);
             action(_name_value_mapping);
 
 

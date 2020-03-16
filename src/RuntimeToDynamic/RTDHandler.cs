@@ -1,7 +1,7 @@
 ﻿namespace Natasha.RuntimeToDynamic
 {
 
-    public class NHandler
+    public class RTDHandler
     {
 
 
@@ -23,23 +23,23 @@
 
 
 
-        public NDomain NDomainHandler
+        public NDomain DelegateHandler
         {
-            get { return NDomain.Create(Domain); }
+            get { return NDomain.Create(Domain).Using(Namespace); }
         }
-        public NClass NClassHandler
+        public NClass ClassHandler
         {
             get { return NClass.Create(Domain).Using(Namespace); }
         }
-        public NEnum NEnumHandler
+        public NEnum EnumHandler
         {
             get { return NEnum.Create(Domain).Using(Namespace); }
         }
-        public NInterface NInterfaceHandler
+        public NInterface InterfaceHandler
         {
             get { return NInterface.Create(Domain).Using(Namespace); }
         }
-        public NStruct NStructHandler
+        public NStruct StructHandler
         {
             get { return NStruct.Create(Domain).Using(Namespace); }
         }

@@ -15,7 +15,7 @@ namespace UTProject
         public void TestValue()
         {
 
-            ReuseAnonymousRTD runtime = new ReuseAnonymousRTD();
+            var runtime = ReuseAnonymousRTD.Random();
             runtime.AddValue("小明");
             runtime.AddValue("小明");
             runtime.AddValue("小明1");
@@ -24,9 +24,9 @@ namespace UTProject
             runtime.Complie();
 
 
-            string result = runtime.NDomainHandler.Func<string>($"return {runtime.GetScript("小明")};", runtime.Namespace)();
-            string result3 = runtime.NDomainHandler.Func<string>($"return {runtime.TypeName}.name2;", runtime.Namespace)();
-            string result4 = runtime.NDomainHandler.Func<string>($"return {runtime.TypeName}.name2;", runtime.Namespace)();
+            string result = runtime.DelegateHandler.Func<string>($"return {runtime.GetScript("小明")};")();
+            string result3 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
+            string result4 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
             Assert.Equal("小明", result);
             Assert.Equal("abc", result3);
             Assert.Equal("abc", result4);
@@ -39,7 +39,7 @@ namespace UTProject
         {
 
             Func<string, int> ageFunc = item => item.Length;
-            ReuseAnonymousRTD runtime = new ReuseAnonymousRTD();
+            var runtime = ReuseAnonymousRTD.Random();
             runtime.AddValue(ageFunc);
             runtime.AddValue(ageFunc);
             runtime.AddValue("name", "abc");
@@ -47,9 +47,9 @@ namespace UTProject
             runtime.Complie();
 
 
-            var result = runtime.NDomainHandler.Func<string,int>($"return {runtime.GetScript(ageFunc)}(arg);", runtime.Namespace)("Hello");
-            string result3 = runtime.NDomainHandler.Func<string>($"return {runtime.TypeName}.name2;", runtime.Namespace)();
-            string result4 = runtime.NDomainHandler.Func<string>($"return {runtime.TypeName}.name2;", runtime.Namespace)();
+            var result = runtime.DelegateHandler.Func<string,int>($"return {runtime.GetScript(ageFunc)}(arg);")("Hello");
+            string result3 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
+            string result4 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
             Assert.Equal("abc", result3);
             Assert.Equal("abc", result4);
             Assert.Equal(5, result);

@@ -15,7 +15,7 @@ namespace UTProject
         public void TestValue()
         {
 
-            AnonymousRTD runtime = new AnonymousRTD();
+            var runtime = AnonymousRTD.Random();
             runtime.AddValue("小明");
             runtime.AddValue("小明1");
             runtime.AddValue("小明");
@@ -24,11 +24,11 @@ namespace UTProject
             runtime.Complie();
 
 
-            string result0 = runtime.NDomainHandler.Func<string>($"return {runtime.TypeName}._anonymous_0;", runtime.Namespace)();
-            string result1 = runtime.NDomainHandler.Func<string>($"return {runtime.TypeName}._anonymous_1;", runtime.Namespace)();
-            string result2 = runtime.NDomainHandler.Func<string>($"return {runtime.TypeName}._anonymous_2;", runtime.Namespace)();
-            string result3 = runtime.NDomainHandler.Func<string>($"return {runtime.TypeName}.name;", runtime.Namespace)();
-            string result4 = runtime.NDomainHandler.Func<string>($"return {runtime.TypeName}.name2;", runtime.Namespace)();
+            string result0 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}._anonymous_1;")();
+            string result1 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}._anonymous_2;")();
+            string result2 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}._anonymous_3;")();
+            string result3 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name;")();
+            string result4 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
             Assert.Equal("小明1", result1);
             Assert.Equal("小明", result0);
             Assert.Equal("小明", result2);
@@ -44,7 +44,7 @@ namespace UTProject
 
             Func<string, int> func = item => item.Length;
             Func<string, int> func1 = item => item.Length+1;
-            AnonymousRTD runtime = new AnonymousRTD();
+            var runtime = AnonymousRTD.Random();
             runtime.AddValue(func);
             runtime.AddValue(func1);
             runtime.AddValue(func);
@@ -53,11 +53,11 @@ namespace UTProject
             runtime.Complie();
 
 
-            int result0 = runtime.NDomainHandler.Func<string,int>($"return {runtime.TypeName}._anonymous_0(arg);", runtime.Namespace)("hello");
-            int result1 = runtime.NDomainHandler.Func<string, int>($"return {runtime.TypeName}._anonymous_1(arg);", runtime.Namespace)("hello");
-            int result2 = runtime.NDomainHandler.Func<string, int>($"return {runtime.TypeName}._anonymous_2(arg);", runtime.Namespace)("hello");
-            string result3 = runtime.NDomainHandler.Func<string>($"return {runtime.TypeName}.name;", runtime.Namespace)();
-            string result4 = runtime.NDomainHandler.Func<string>($"return {runtime.TypeName}.name2;", runtime.Namespace)();
+            int result0 = runtime.DelegateHandler.Func<string,int>($"return {runtime.TypeName}._anonymous_1(arg);")("hello");
+            int result1 = runtime.DelegateHandler.Func<string, int>($"return {runtime.TypeName}._anonymous_2(arg);")("hello");
+            int result2 = runtime.DelegateHandler.Func<string, int>($"return {runtime.TypeName}._anonymous_3(arg);")("hello");
+            string result3 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name;")();
+            string result4 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
             Assert.Equal(6, result1);
             Assert.Equal(5, result0);
             Assert.Equal(5, result2);
