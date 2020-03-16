@@ -104,3 +104,31 @@ var test = MyTest.Random();
 ```
 
 自带的模板中的方法均采用虚方法，以便开发者重载。
+
+
+### 关联动态委托
+
+当您使用完上述代码之后，若想继续构造动态的方法 / 类 /  枚举 / 接口 / 结构体等工作可以如下：
+
+```C# 
+
+var runtime = ReuseAnonymousRTD.Random();
+Func<string, int> func = item => item.Length;
+runtime.AddValue("test",func):
+
+var func = runtime.DelegateHandler.Func<string,int>(
+
+@"if( arg = \"小明\" ) 
+{ 
+      return 100; 
+}
+else 
+{
+      return test(arg);
+}"
+
+);
+
+int age = func("小明");
+//age = 100;
+```
