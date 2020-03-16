@@ -5,7 +5,7 @@ using System.Text;
 namespace Natasha.RuntimeToDynamic
 {
 
-    public class BaseRTD
+    public class BaseRTD : NHandler
     {
 
         public NClass Builder;
@@ -27,7 +27,12 @@ namespace Natasha.RuntimeToDynamic
 
 
 
-        public AssemblyDomain Domain
+
+
+
+
+
+        public override AssemblyDomain Domain
         {
             get { return Builder.Complier.Domain; }
             set { Builder.Complier.Domain = value; }
@@ -44,7 +49,7 @@ namespace Natasha.RuntimeToDynamic
 
 
 
-        public string Namespace
+        public override string Namespace
         {
             get { return Builder.NamespaceScript; }
             set { Builder.Namespace(value); }
@@ -134,7 +139,7 @@ namespace Natasha.RuntimeToDynamic
 
 
             var result = Builder.OopBody(methodBuilder).GetType();
-            var action = NDomain.Create(Domain).Action<ConcurrentDictionary<string, object>>($"{Builder.OopNameScript}.SetObject(obj);", Builder.NamespaceScript);
+            var action = NDomainHandler.Action<ConcurrentDictionary<string, object>>($"{Builder.OopNameScript}.SetObject(obj);", Builder.NamespaceScript);
             action(_name_value_mapping);
 
 

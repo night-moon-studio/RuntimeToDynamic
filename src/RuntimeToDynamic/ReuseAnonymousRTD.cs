@@ -20,7 +20,7 @@ namespace Natasha.RuntimeToDynamic
 
             if (_cache.ContainsKey(value))
             {
-                return  TypeName + "." + _cache[value];
+                return TypeName + "." + _cache[value];
             }
             return default;
 
