@@ -2,10 +2,26 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netcoreapp3.0;</TargetFrameworks>
+   <Product>Natasha</Product>
+    <Description>R2D 将运行时环境压入到动态环境中。</Description>
+    <Copyright>Night Moon Studio</Copyright>
+    <PackageId>NMS.RuntimeToDynamic</PackageId>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PackageReleaseNotes>发布新版本</PackageReleaseNotes>
+    <Version>1.0.0</Version>
+    <PackageLicenseUrl>https://github.com/night-moon-studio/RuntimeToDynamic/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/dotnetcore/Natasha</PackageProjectUrl>
+    <PackageTags>Roslyn ; IL ; Scripte ; Dynamic ; R2D;</PackageTags>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <Company>NMSAzulX</Company>
+    <PackageIconUrl>https://avatars2.githubusercontent.com/u/51699821</PackageIconUrl>
+    <Authors>NMSAzulX</Authors>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetCore.Natasha" Version="2.14.0" />
+    <PackageReference Include="DotNetCore.Natasha" Version="3.0.0.1" />
   </ItemGroup>
 
 </Project>

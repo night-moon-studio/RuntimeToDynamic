@@ -15,7 +15,7 @@ namespace UTProject
         public void TestValue()
         {
 
-            var runtime = AnonymousRTD.Random();
+            var runtime = AnonymousRTD.RandomDomain();
             runtime.AddValue("小明");
             runtime.AddValue("小明1");
             runtime.AddValue("小明");
@@ -44,7 +44,7 @@ namespace UTProject
 
             Func<string, int> func = item => item.Length;
             Func<string, int> func1 = item => item.Length+1;
-            var runtime = AnonymousRTD.Random();
+            var runtime = AnonymousRTD.RandomDomain();
             runtime.AddValue(func);
             runtime.AddValue(func1);
             runtime.AddValue(func);

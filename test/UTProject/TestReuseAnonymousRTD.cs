@@ -15,7 +15,7 @@ namespace UTProject
         public void TestValue()
         {
 
-            var runtime = ReuseAnonymousRTD.Random();
+            var runtime = ReuseAnonymousRTD.RandomDomain();
             runtime.AddValue("小明");
             runtime.AddValue("小明");
             runtime.AddValue("小明1");
@@ -39,7 +39,7 @@ namespace UTProject
         {
 
             Func<string, int> ageFunc = item => item.Length;
-            var runtime = ReuseAnonymousRTD.Random();
+            var runtime = ReuseAnonymousRTD.RandomDomain();
             runtime.AddValue(ageFunc);
             runtime.AddValue(ageFunc);
             runtime.AddValue("name", "abc");
