@@ -36,6 +36,19 @@ AnonymousRTD.Create(string / domain);
 
 
 ### 使用方法：
+
+ <br/>  
+ 
+ - 引入 动态构件库： NMS.RuntimeToDynamic
+
+ - 引入 编译环境库： DotNetCore.Compile.Environment
+
+ - 向引擎中注入定制的域： DomainManagement.RegisterDefault< AssemblyDomain >()
+
+ - 敲代码  
+ 
+<br/>  
+
 ```C#
 
 //随你喜欢添加什么类型都行，最后会统一强转到强类型字段
