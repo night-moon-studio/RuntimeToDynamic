@@ -8,16 +8,16 @@
     <PackageId>NMS.RuntimeToDynamic</PackageId>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageReleaseNotes>发布新版本</PackageReleaseNotes>
-    <Version>1.0.0</Version>
+    <Version>1.0.0.1</Version>
     <PackageLicenseUrl>https://github.com/night-moon-studio/RuntimeToDynamic/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/dotnetcore/Natasha</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/night-moon-studio/RuntimeToDynamic</PackageProjectUrl>
     <PackageTags>Roslyn ; IL ; Scripte ; Dynamic ; R2D;</PackageTags>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <Company>NMSAzulX</Company>
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/51699821</PackageIconUrl>
     <Authors>NMSAzulX</Authors>
-    <FileVersion>1.0.0.0</FileVersion>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.1</FileVersion>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
