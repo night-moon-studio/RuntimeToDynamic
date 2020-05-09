@@ -39,7 +39,7 @@ AnonymousRTD.Create(string / domain);
 
  <br/>  
  
- - 引入 动态构件库： NMS.RuntimeToDynamic
+ - 引入 动态构建库： NMS.RuntimeToDynamic
 
  - 引入 编译环境库： DotNetCore.Compile.Environment
 
