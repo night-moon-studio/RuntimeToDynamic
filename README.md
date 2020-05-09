@@ -64,15 +64,15 @@ var runtime = AnonymousRTD.RandomDomain();
 
 
 //这里的 age 是将是同一个对象;
-//如果使用了 ReuseAnonymousRTD 将只生成 _anonymous_3 一个字段；
+//如果使用了 ReuseAnonymousRTD 将只生成 _anonymous_1 一个字段；
 //如果使用了 AnonymousRTD 将生成 _anonymous_1,_anonymous_2,_anonymous_3 三个字段。
-runtime.AddValue("age1", age);
-runtime.AddValue("age2", age);
-runtime.AddValue("age3", age);
+runtime.AddValue(age);
+runtime.AddValue(age);
+runtime.AddValue(age);
 
 
 //由于 abc 为同一个对象，且使用了匿名映射，
-//如果使用了 ReuseAnonymousRTD 将只生成 name2 一个字段；
+//如果使用了 ReuseAnonymousRTD 将只生成 name 一个字段；
 //如果使用了 AnonymousRTD 将生成 name,name2 两个字段。
 runtime.AddValue("name", "abc");
 runtime.AddValue("name2", "abc");
@@ -84,7 +84,7 @@ runtime.AddValue("name2", "abc");
 runtime.AddValue("name", "abc");
 runtime.AddValue("name2", "abc");
 $@"public string GetName(){{
-      return {runtime.GetScript("abc")};
+      return {runtime.TypeName}.{runtime.GetFieldScript("abc")};
 }}"
 
 
