@@ -59,8 +59,8 @@ Func<string, int> func = item => item.Length;
 Student stu = new Student();
 
 //使用随即域进行动态构造
-var runtime = ReuseAnonymousRTD.Random();
-var runtime = AnonymousRTD.Random();
+var runtime = ReuseAnonymousRTD.RandomDomain();
+var runtime = AnonymousRTD.RandomDomain();
 
 
 //这里的 age 是将是同一个对象;
@@ -128,7 +128,7 @@ var test = MyTest.Random();
 
 ```C# 
 
-var runtime = ReuseAnonymousRTD.Random();
+var runtime = ReuseAnonymousRTD.RandomDomain();
 Func<string, int> func = item => item.Length;
 runtime.AddValue("test",func):
 
