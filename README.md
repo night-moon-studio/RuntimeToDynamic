@@ -12,10 +12,11 @@
 与 Natasha 静态构造 API 相同，有 Create / Random / Default 等静态构造函数。
 
 ```C#
-AnonymousRTD.Random();
-AnonymousRTD.Default();
-AnonymousRTD.Create(string / domain);
+AnonymousRTD.RandomDomain();
+AnonymousRTD.DefaultDomain();
+AnonymousRTD.CreateDomain(string / domain);
 ```
+> 更多参见 : https://natasha.dotnetcore.xyz/zh/api/static-init.html
 
 该类属于匿名构建，允许只向方法中加入值，而动态生成的字段将会以 “前缀”+“自增号” 形式被动态定义。  
 匿名字段前缀默认为 `_anonymous_`，因此生成的代码为：`pubilc static string _anonymous_1;`  
