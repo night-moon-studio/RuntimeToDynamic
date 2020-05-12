@@ -29,30 +29,14 @@ namespace Natasha.RuntimeToDynamic
 
 
 
-        public string GetScript(object value)
+        public string GetFieldScript(object value)
         {
 
             if (_cache.ContainsKey(value))
             {
-                return TypeName + "." + _cache[value];
+                return _cache[value];
             }
             return default;
-
-        }
-
-
-
-
-        private void RemoveRepeate(object value)
-        {
-
-            if (_cache.ContainsKey(value))
-            {
-
-                var temp = _cache[value];
-                Remove(temp);
-
-            }
 
         }
 
@@ -62,10 +46,13 @@ namespace Natasha.RuntimeToDynamic
         public override string AddValue(object value, Type type = null)
         {
 
-            RemoveRepeate(value);
-            string name = base.AddValue(value, type);
-            _cache[value] = name;
-            return name;
+            if (!_cache.ContainsKey(value))
+            {
+
+                _cache[value] = base.AddValue(value, type);
+
+            }
+            return _cache[value];
 
         }
 
@@ -75,13 +62,15 @@ namespace Natasha.RuntimeToDynamic
         public override void AddValue(string name, object value, Type type = null)
         {
 
-            //删除之前的
-            RemoveRepeate(value);
+            if (!_cache.ContainsKey(value))
+            {
 
+                //保存最新的
+                _cache[value] = name;
+                base.AddValue(name, value, type);
 
-            //保存最新的
-            _cache[value] = name;
-            base.AddValue(name, value, type);
+            }
+            
 
         }
 

@@ -24,12 +24,10 @@ namespace UTProject
             runtime.Complie();
 
 
-            string result = runtime.DelegateHandler.Func<string>($"return {runtime.GetScript("小明")};")();
-            string result3 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
-            string result4 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
+            string result = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.{runtime.GetFieldScript("小明")};")();
+            string result3 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name;")();
             Assert.Equal("小明", result);
             Assert.Equal("abc", result3);
-            Assert.Equal("abc", result4);
 
         }
 
@@ -47,11 +45,9 @@ namespace UTProject
             runtime.Complie();
 
 
-            var result = runtime.DelegateHandler.Func<string,int>($"return {runtime.GetScript(ageFunc)}(arg);")("Hello");
-            string result3 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
-            string result4 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
+            var result = runtime.DelegateHandler.Func<string,int>($"return {runtime.TypeName}.{runtime.GetFieldScript(ageFunc)}(arg);")("Hello");
+            string result3 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name;")();
             Assert.Equal("abc", result3);
-            Assert.Equal("abc", result4);
             Assert.Equal(5, result);
 
         }
