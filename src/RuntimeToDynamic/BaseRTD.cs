@@ -113,7 +113,7 @@ namespace Natasha.RuntimeToDynamic
             methodBuilder.AppendLine("}");
 
 
-            var result = Body(methodBuilder.ToString()).GetType();
+            var result = BodyAppend(methodBuilder.ToString()).GetType();
             var action = DelegateHandler.Action<ConcurrentDictionary<string, object>>($"{NameScript}.SetObject(obj);", NamespaceScript);
             action(_name_value_mapping);
 
