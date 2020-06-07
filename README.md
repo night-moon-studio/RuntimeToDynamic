@@ -44,7 +44,9 @@ AnonymousRTD.CreateDomain(string / domain);
 
  - 引入 编译环境库： DotNetCore.Compile.Environment
 
- - 向引擎中注入定制的域： DomainManagement.RegisterDefault< AssemblyDomain >()
+ - 向引擎中注入定制的域：  
+  - 1.1.1.1 版本以前： DomainManagement.RegisterDefault< AssemblyDomain >();
+  - 1.1.1.1 版本及以后： AssemblyDomain.Init();
 
  - 敲代码  
  
