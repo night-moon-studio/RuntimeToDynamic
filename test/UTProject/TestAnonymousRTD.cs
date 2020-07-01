@@ -1,5 +1,6 @@
 ﻿using Natasha;
 using Natasha.RuntimeToDynamic;
+using NatashaUT;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +9,7 @@ using Xunit;
 namespace UTProject
 {
     [Trait("匿名构造","")]
-    public class TestAnonymousRTD
+    public class TestAnonymousRTD:PrepareTest
     {
 
         [Fact(DisplayName = "传值")]

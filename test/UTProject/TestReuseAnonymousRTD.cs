@@ -1,5 +1,6 @@
 ﻿using Natasha;
 using Natasha.RuntimeToDynamic;
+using NatashaUT;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +9,7 @@ using Xunit;
 namespace UTProject
 {
     [Trait("复用构造","")]
-    public class TestReuseAnonymousRTD
+    public class TestReuseAnonymousRTD : PrepareTest
     {
 
         [Fact(DisplayName = "传值")]

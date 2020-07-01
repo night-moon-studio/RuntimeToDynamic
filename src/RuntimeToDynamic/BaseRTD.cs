@@ -1,5 +1,8 @@
-﻿using Natasha.CSharp;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Natasha.CSharp;
 using Natasha.Framework;
+using Natasha.Reverser;
+using Natasha.Reverser.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Text;
@@ -10,16 +13,42 @@ namespace Natasha.RuntimeToDynamic
     public class BaseRTD<T> : NHandler<T> where T : BaseRTD<T>, new()
     {
 
-        private readonly ConcurrentDictionary<string,object> _name_value_mapping;
+        public readonly ConcurrentDictionary<string, object> NameValueMapping;
         private readonly ConcurrentDictionary<string, Type> _name_type_mapping;
+        private AccessFlags _fieldAccess;
+        private string _template;
+
+        public T FieldAccess(AccessFlags accessType)
+        {
+            _fieldAccess = accessType;
+            return Link;
+        }
+        public T UseStaticReadonlyField()
+        {
+            _template = "static readonly ";
+            return Link;
+        }
+        public T UseStaticField()
+        {
+            _template = "static ";
+            return Link;
+        }
+        public T UseReadonlyField()
+        {
+            _template = "readonly ";
+            return Link;
+        }
+
+
         public BaseRTD()
         {
-
+            FieldAccess(AccessFlags.Public);
+            UseStaticField();
             this.Class();
             UseRandomName();
             Namespace("NScriptPacking");
             Public();
-            _name_value_mapping = new ConcurrentDictionary<string, object>();
+            NameValueMapping = new ConcurrentDictionary<string, object>();
             _name_type_mapping = new ConcurrentDictionary<string, Type>();
 
         }
@@ -52,11 +81,11 @@ namespace Natasha.RuntimeToDynamic
 
 
 
-        public virtual void AddValue(string name,object value, Type type = default)
+        public virtual void AddValue(string name, object value, Type type = default)
         {
 
-            _name_value_mapping[name] = value;
-            if (type!=default)
+            NameValueMapping[name] = value;
+            if (type != default)
             {
                 _name_type_mapping[name] = type;
             }
@@ -71,11 +100,11 @@ namespace Natasha.RuntimeToDynamic
 
             if (_name_type_mapping.ContainsKey(name))
             {
-                while (!_name_type_mapping.TryRemove(name, out _));
+                while (!_name_type_mapping.TryRemove(name, out _)) ;
             }
-            if (_name_value_mapping.ContainsKey(name))
+            if (NameValueMapping.ContainsKey(name))
             {
-                while (!_name_value_mapping.TryRemove(name, out _)) ;
+                while (!NameValueMapping.TryRemove(name, out _)) ;
             }
 
         }
@@ -86,14 +115,20 @@ namespace Natasha.RuntimeToDynamic
         public virtual Type Complie()
         {
 
+            var fieldTemplate = AccessReverser.GetAccess(_fieldAccess) + _template;
             StringBuilder methodBuilder = new StringBuilder();
-            methodBuilder.AppendLine(@"public static void SetObject(ConcurrentDictionary<string,object> objs){");
-            foreach (var item in _name_value_mapping)
+            if (_template.Contains("static"))
             {
-                
+                methodBuilder.AppendLine(@"public static void SetObject(ConcurrentDictionary<string,object> objs){");
+            }
+            else
+            {
+                methodBuilder.AppendLine($"public {NameScript}(ConcurrentDictionary<string,object> objs){{");
+            }
+            foreach (var item in NameValueMapping)
+            {
+
                 string name = item.Key;
-
-
                 Type type;
                 if (_name_type_mapping.ContainsKey(item.Key))
                 {
@@ -101,22 +136,22 @@ namespace Natasha.RuntimeToDynamic
                 }
                 else
                 {
-                    type = _name_value_mapping[item.Key].GetType();
+                    type = NameValueMapping[item.Key].GetType();
                 }
 
-
-                PublicStaticField(type, name);
+                BodyAppend(fieldTemplate + $"{type.GetDevelopName()} {name};");
                 methodBuilder.AppendLine($"{name} = ({type.GetDevelopName()})objs[\"{name}\"];");
 
 
             }
             methodBuilder.AppendLine("}");
-
-
             var result = BodyAppend(methodBuilder.ToString()).GetType();
-            var action = DelegateHandler.Action<ConcurrentDictionary<string, object>>($"{NameScript}.SetObject(obj);", NamespaceScript);
-            action(_name_value_mapping);
 
+            if (_template.Contains("static"))
+            {
+                var action = DelegateHandler.Action<ConcurrentDictionary<string, object>>($"{NameScript}.SetObject(obj);", NamespaceScript);
+                action(NameValueMapping);
+            }
 
             return result;
 
