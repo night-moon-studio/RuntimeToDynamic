@@ -9,7 +9,7 @@ namespace NatashaUT
     {
         static PrepareTest()
         {
-            AssemblyDomain.Init();
+            NatashaInitializer.InitializeAndPreheating();
         }
     }
 }

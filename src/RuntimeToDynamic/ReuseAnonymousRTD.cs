@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 
-namespace Natasha.RuntimeToDynamic
+namespace RuntimeToDynamic
 {
 
     public class ReuseAnonymousRTD : ReuseAnonymousRTD<ReuseAnonymousRTD>
@@ -28,8 +28,12 @@ namespace Natasha.RuntimeToDynamic
 
 
 
-
-        public string GetFieldScript(object value)
+        /// <summary>
+        /// 通过值获取匿名名字
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public string GetFieldName(object value)
         {
 
             if (_cache.ContainsKey(value))
@@ -58,7 +62,12 @@ namespace Natasha.RuntimeToDynamic
 
 
 
-
+        /// <summary>
+        /// 指定名字更新缓存
+        /// </summary>
+        /// <param name="name">字段名</param>
+        /// <param name="value">值</param>
+        /// <param name="type">指定的类型</param>
         public override void AddValue(string name, object value, Type type = null)
         {
 

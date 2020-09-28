@@ -1,9 +1,7 @@
-﻿using Natasha;
-using Natasha.RuntimeToDynamic;
+﻿using Natasha.CSharp;
 using NatashaUT;
+using RuntimeToDynamic;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace UTProject
@@ -16,20 +14,26 @@ namespace UTProject
         public void TestValue()
         {
 
-            var runtime = AnonymousRTD.RandomDomain();
+            var runtime = new AnonymousRTD();
+            runtime.UseStaticReadonlyFields();
             runtime.AddValue("小明");
             runtime.AddValue("小明1");
             runtime.AddValue("小明");
             runtime.AddValue("name", "abc");
             runtime.AddValue("name2", "abc");
-            runtime.Complie();
 
-
-            string result0 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}._anonymous_1;")();
-            string result1 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}._anonymous_2;")();
-            string result2 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}._anonymous_3;")();
-            string result3 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name;")();
-            string result4 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
+            var nClass = NClass.RandomDomain()
+                .Public()
+                .BodyAppendLine(runtime.FieldsScript)
+                .BodyAppendLine(runtime.MethodScript);
+            var type = nClass.GetType();
+            var action = runtime.GetInitMethod(nClass);
+            action();
+            string result0 = nClass.DelegateHandler.Func<string>($"return {type.Name}._anonymous_1;")();
+            string result1 = nClass.DelegateHandler.Func<string>($"return {type.Name}._anonymous_2;")();
+            string result2 = nClass.DelegateHandler.Func<string>($"return {type.Name}._anonymous_3;")();
+            string result3 = nClass.DelegateHandler.Func<string>($"return {type.Name}.name;")();
+            string result4 = nClass.DelegateHandler.Func<string>($"return {type.Name}.name2;")();
             Assert.Equal("小明1", result1);
             Assert.Equal("小明", result0);
             Assert.Equal("小明", result2);
@@ -45,20 +49,29 @@ namespace UTProject
 
             Func<string, int> func = item => item.Length;
             Func<string, int> func1 = item => item.Length+1;
-            var runtime = AnonymousRTD.RandomDomain();
+            var runtime = new AnonymousRTD();
+            runtime.UseStaticFields();
             runtime.AddValue(func);
             runtime.AddValue(func1);
             runtime.AddValue(func);
             runtime.AddValue("name", "abc");
             runtime.AddValue("name2", "abc");
-            runtime.Complie();
+
+            var nClass = NClass.RandomDomain()
+                .Public()
+                .BodyAppendLine(runtime.FieldsScript)
+                .BodyAppendLine(runtime.MethodScript);
+            var type = nClass.GetType();
+
+            var action = runtime.GetInitMethod(nClass);
+            action();
 
 
-            int result0 = runtime.DelegateHandler.Func<string,int>($"return {runtime.TypeName}._anonymous_1(arg);")("hello");
-            int result1 = runtime.DelegateHandler.Func<string, int>($"return {runtime.TypeName}._anonymous_2(arg);")("hello");
-            int result2 = runtime.DelegateHandler.Func<string, int>($"return {runtime.TypeName}._anonymous_3(arg);")("hello");
-            string result3 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name;")();
-            string result4 = runtime.DelegateHandler.Func<string>($"return {runtime.TypeName}.name2;")();
+            int result0 = nClass.DelegateHandler.Func<string,int>($"return {type.Name}._anonymous_1(arg);")("hello");
+            int result1 = nClass.DelegateHandler.Func<string, int>($"return {type.Name}._anonymous_2(arg);")("hello");
+            int result2 = nClass.DelegateHandler.Func<string, int>($"return {type.Name}._anonymous_3(arg);")("hello");
+            string result3 = nClass.DelegateHandler.Func<string>($"return {type.Name}.name;")();
+            string result4 = nClass.DelegateHandler.Func<string>($"return {type.Name}.name2;")();
             Assert.Equal(6, result1);
             Assert.Equal(5, result0);
             Assert.Equal(5, result2);

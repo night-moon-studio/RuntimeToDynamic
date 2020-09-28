@@ -1,76 +1,49 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Natasha.CSharp;
-using Natasha.Framework;
-using Natasha.Reverser;
-using Natasha.Reverser.Model;
+﻿using Natasha.CSharp;
+using Natasha.CSharp.Template;
 using System;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Natasha.RuntimeToDynamic
+namespace RuntimeToDynamic
 {
 
-    public class BaseRTD<T> : NHandler<T> where T : BaseRTD<T>, new()
+    public class BaseRTD<T> : ALinkTemplate<T> where T : BaseRTD<T>, new() 
     {
 
         public readonly ConcurrentDictionary<string, object> NameValueMapping;
         private readonly ConcurrentDictionary<string, Type> _name_type_mapping;
-        private AccessFlags _fieldAccess;
-        private string _template;
-
-        public T FieldAccess(AccessFlags accessType)
-        {
-            _fieldAccess = accessType;
-            return Link;
-        }
-        public T UseStaticReadonlyField()
-        {
-            _template = "static readonly ";
-            return Link;
-        }
-        public T UseStaticField()
-        {
-            _template = "static ";
-            return Link;
-        }
-        public T UseReadonlyField()
-        {
-            _template = "readonly ";
-            return Link;
-        }
+        private R2DBuildType _buildType;
 
 
         public BaseRTD()
         {
-            FieldAccess(AccessFlags.Public);
-            UseStaticField();
-            this.Class();
-            UseRandomName();
-            Namespace("NScriptPacking");
-            Public();
+
             NameValueMapping = new ConcurrentDictionary<string, object>();
             _name_type_mapping = new ConcurrentDictionary<string, Type>();
 
         }
 
 
-
-
-        public DomainBase Domain
+        public T SetBuildType(R2DBuildType buildType)
         {
-            get { return AssemblyBuilder.Compiler.Domain; }
-            set { AssemblyBuilder.Compiler.Domain = value; }
+            _buildType = buildType;
+            return Link;
         }
 
 
-
-
-        public string TypeName
+        public T UseReadonlyFields()
         {
-            get { return NameScript; }
+            return SetBuildType(R2DBuildType.Readonly);
         }
-
-
+        public T UseStaticFields()
+        {
+            return SetBuildType(R2DBuildType.Static);
+        }
+        public T UseStaticReadonlyFields()
+        {
+            return SetBuildType(R2DBuildType.Static | R2DBuildType.Readonly);
+        }
 
 
         public object this[string key]
@@ -80,7 +53,12 @@ namespace Natasha.RuntimeToDynamic
 
 
 
-
+        /// <summary>
+        /// 指定名字将值添加到缓存中
+        /// </summary>
+        /// <param name="name">字段名字</param>
+        /// <param name="value">值</param>
+        /// <param name="type">指定的类型</param>
         public virtual void AddValue(string name, object value, Type type = default)
         {
 
@@ -110,56 +88,101 @@ namespace Natasha.RuntimeToDynamic
         }
 
 
-
-
-        public virtual Type Complie()
-        {
-
-            var fieldTemplate = AccessReverser.GetAccess(_fieldAccess) + _template;
-            StringBuilder methodBuilder = new StringBuilder();
-            if (_template.Contains("static"))
+        /// <summary>
+        /// 获取字段定义字符串
+        /// </summary>
+        public string FieldsScript 
+        { 
+            get 
             {
-                methodBuilder.AppendLine(@"public static void SetObject(ConcurrentDictionary<string,object> objs){");
-            }
-            else
-            {
-                methodBuilder.AppendLine($"public {NameScript}(ConcurrentDictionary<string,object> objs){{");
-            }
-            foreach (var item in NameValueMapping)
-            {
-
-                string name = item.Key;
-                Type type;
-                if (_name_type_mapping.ContainsKey(item.Key))
+                StringBuilder fieldsBuilder = new StringBuilder();
+                string fieldsDefined = "public ";
+                if ((_buildType & R2DBuildType.Static) != 0)
                 {
-                    type = _name_type_mapping[item.Key];
+
+                    fieldsDefined += "static ";
+
                 }
-                else
+                if ((_buildType & R2DBuildType.Readonly) != 0)
                 {
-                    type = NameValueMapping[item.Key].GetType();
+
+                    fieldsDefined += "readonly ";
+
                 }
 
-                BodyAppend(fieldTemplate + $"{type.GetDevelopName()} {name};");
-                methodBuilder.AppendLine($"{name} = ({type.GetDevelopName()})objs[\"{name}\"];");
 
+                foreach (var item in NameValueMapping)
+                {
 
-            }
-            methodBuilder.AppendLine("}");
-            var result = BodyAppend(methodBuilder.ToString()).GetType();
+                    string name = item.Key;
+                    string typeName = NameValueMapping[item.Key].GetType().GetDevelopName();
+                    if (_name_type_mapping.ContainsKey(item.Key))
+                    {
+                        typeName = _name_type_mapping[item.Key].GetDevelopName();
+                    }
+                    fieldsBuilder.AppendLine($"{fieldsDefined} {typeName} {name};");
 
-            if (_template.Contains("static"))
-            {
-                var action = DelegateHandler.Action<ConcurrentDictionary<string, object>>($"{NameScript}.SetObject(obj);", NamespaceScript);
-                action(NameValueMapping);
-            }
-
-            return result;
-
+                }
+                return fieldsBuilder.ToString();
+            } 
         }
 
 
+        /// <summary>
+        /// 获取方法字符串
+        /// </summary>
+        public string MethodScript
+        {
+            get
+            {
+                StringBuilder methodBuilder = new StringBuilder();
+                string methodDefined = "public void SetObject(ConcurrentDictionary<string,object> objs){";
+                if ((_buildType & R2DBuildType.Static) != 0)
+                {
+
+                    methodDefined =@"public static void SetObject(ConcurrentDictionary<string,object> objs){";
+
+                }
+
+                methodBuilder.AppendLine(methodDefined);
+
+                    foreach (var item in NameValueMapping)
+                    {
+
+                        string name = item.Key;
+                        string typeName = NameValueMapping[item.Key].GetType().GetDevelopName();
+                        if (_name_type_mapping.ContainsKey(item.Key))
+                        {
+                            typeName = _name_type_mapping[item.Key].GetDevelopName();
+                        }
+                        methodBuilder.AppendLine($"{((_buildType & R2DBuildType.Readonly) != 0? name.ReadonlyScript() : name)} = ({typeName})objs[\"{name}\"];");
+
+                    }
+
+                
+                methodBuilder.AppendLine("}");
+                return methodBuilder.ToString();
+            }
+        }
+
+
+        public Action GetInitMethod(NClass nClass)
+        {
+           var action = nClass.DelegateHandler.Action<ConcurrentDictionary<string, object>>($@"
+{nClass.NameScript}.SetObject(obj);
+");
+            return () => { action(NameValueMapping); };
+        }
+
+        public Action<TInstance> GetInitMethod<TInstance>(NClass nClass)
+        {
+                var initMethod = nClass.DelegateHandler.Action<TInstance, ConcurrentDictionary<string, object>>($@"
+var realInstance  = ({nClass.NameScript})arg1;
+realInstance.SetObject(arg2);
+");
+                return (instance) => { initMethod(instance, NameValueMapping); };
+           
+        }
     }
-
-
 
 }

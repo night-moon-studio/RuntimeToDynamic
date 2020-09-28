@@ -20,12 +20,16 @@
     <AssemblyVersion>1.1.1.1</AssemblyVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="DotNetCore.Natasha.CSharp.All" Version="1.0.0" />
+  </ItemGroup>
+
   <!--<ItemGroup>
-    <PackageReference Include="DotNetCore.Natasha" Version="3.11.0-alpha1" />
+    <PackageReference Include="DotNetCore.Natasha.All" Version="3.11.0-alpha1" />
   </ItemGroup>-->
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <ProjectReference Include="..\..\..\Natasha\src\Natasha\Natasha.csproj" />
-  </ItemGroup>
+  </ItemGroup>-->
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Natasha.RuntimeToDynamic
+namespace RuntimeToDynamic
 {
 
     public class AnonymousRTD : AnonymousRTD<AnonymousRTD>
@@ -48,7 +48,7 @@ namespace Natasha.RuntimeToDynamic
         /// </summary>
         /// <param name="value">值</param>
         /// <param name="type">类型（选填）</param>
-        /// <returns></returns>
+        /// <returns>返回匿名名称</returns>
         public virtual string AddValue(object value, Type type = default)
         {
 
