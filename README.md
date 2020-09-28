@@ -1,7 +1,6 @@
 # RuntimeToDynamic
 将运行时数据存储在动态生成的静态代码中
 
-
 该库旨在将运行时数据转储到动态构建的静态类中，以供动态代码使用运行时数据，比较常用的场景是在封装类库写配置相关的API的时候，可以直接使用本库进行运行时数据转储方面的构建。
 
 <br/>  
@@ -9,17 +8,24 @@
 
 ### AnonymousRTD 类
 
-与 Natasha 静态构造 API 相同，有 Create / Random / Default 等静态构造函数。
+
+该类属于匿名构建，动态生成的字段将会以 “前缀”+“自增号” 形式被动态定义。  
+匿名字段前缀默认为 `_anonymous_`，因此生成的代码为：`pubilc (static/readonly) string _anonymous_1;`  
 
 ```C#
-AnonymousRTD.RandomDomain();
-AnonymousRTD.DefaultDomain();
-AnonymousRTD.CreateDomain(string / domain);
+var arst = new AnonymousRTD();
+arst.UseReadonlyFields(); //生成的字段是 public readonly {type} _anonyous_{count};
+arst.UseStaticFields(); //生成的字段是 public static {type} _anonyous_{count};
+arst.UseStaticReadonlyFields(); //生成的字段是 public static readonly {type} _anonyous_{count};
 ```
-> 更多参见 : https://natasha.dotnetcore.xyz/zh/api/static-init.html
 
-该类属于匿名构建，允许只向方法中加入值，而动态生成的字段将会以 “前缀”+“自增号” 形式被动态定义。  
-匿名字段前缀默认为 `_anonymous_`，因此生成的代码为：`pubilc static string _anonymous_1;`  
+```C#
+//通过以下代码获取生成的字段以及初始化方法
+arst.FieldsScript;
+arst.MethodScript;
+```
+
+生成的脚本可以添加到 Natasha 中进行编译使用。
 
 <br/>  
 <br/>
@@ -28,8 +34,8 @@ AnonymousRTD.CreateDomain(string / domain);
 ### ReuseAnonymousRTD 类
 
 同样具有上述的静态构造法
-该类属于对象复用构建，当一个值对应多个名字时，将只合并到同一个字段(以最后赋值的名字为准)。  
-该类继承自 AnonymousRTD 类，因此允许无脑添加值，之后通过 `GetScript(obj)` 方法获取动态的字段名。
+该类属于对象复用构建，当一个值对应多个名字时，将只合并到同一个字段(以最开始赋值的名字为准)。  
+该类继承自 AnonymousRTD 类，因此允许无脑添加值，之后通过 `GetFieldName(obj)` 方法获取动态的字段名。
 
 
 <br/>  
@@ -42,11 +48,7 @@ AnonymousRTD.CreateDomain(string / domain);
  
  - 引入 动态构建库： NMS.RuntimeToDynamic
 
- - 引入 编译环境库： DotNetCore.Compile.Environment
-
- - 向引擎中注入定制的域：  
-  - 1.1.1.1 版本以前： DomainManagement.RegisterDefault< AssemblyDomain >();
-  - 1.1.1.1 版本及以后： AssemblyDomain.Init();
+ - 初始化 Natasha： NatashaInitializer.InitializeAndPreheating();  
 
  - 敲代码  
  
@@ -61,8 +63,8 @@ Func<string, int> func = item => item.Length;
 Student stu = new Student();
 
 //使用随即域进行动态构造
-var runtime = ReuseAnonymousRTD.RandomDomain();
-var runtime = AnonymousRTD.RandomDomain();
+var runtime = new ReuseAnonymousRTD();
+var runtime = new AnonymousRTD();
 
 
 //这里的 age 是将是同一个对象;
@@ -116,7 +118,7 @@ public class MyTemplate : ReuseAnonymousRTD<MyTemplate>
 public class MyDevelopTemplate<T> : (BaseRTD<T> / AnonymousRTD<T> / ReuseAnonymousRTD<T>) where T : BaseRTD<T>, new(){}
 
 public class MyTest : MyDevelopTemplate<MyTest> { .... }
-var test = MyTest.Random();
+var test = new MyTest();
 ```
 
 自带的模板中的方法均采用虚方法，以便开发者重载。
@@ -130,7 +132,7 @@ var test = MyTest.Random();
 
 ```C# 
 
-var runtime = ReuseAnonymousRTD.RandomDomain();
+var runtime = new ReuseAnonymousRTD();
 Func<string, int> func = item => item.Length;
 runtime.AddValue("test",func):
 
