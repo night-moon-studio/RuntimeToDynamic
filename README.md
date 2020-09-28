@@ -1,4 +1,4 @@
-# RuntimeToDynamic
+# RuntimeToDynamic  (由于当前未收到反馈本库将于2020年底关闭)
 将运行时数据存储在动态生成的静态代码中
 
 该库旨在将运行时数据转储到动态构建的静态类中，以供动态代码使用运行时数据，比较常用的场景是在封装类库写配置相关的API的时候，可以直接使用本库进行运行时数据转储方面的构建。
@@ -12,6 +12,7 @@
 该类属于匿名构建，动态生成的字段将会以 “前缀”+“自增号” 形式被动态定义。  
 匿名字段前缀默认为 `_anonymous_`，因此生成的代码为：`pubilc (static/readonly) string _anonymous_1;`  
 
+#### 设置构造类型
 ```C#
 var arst = new AnonymousRTD();
 arst.UseReadonlyFields(); //生成的字段是 public readonly {type} _anonyous_{count};
@@ -19,10 +20,18 @@ arst.UseStaticFields(); //生成的字段是 public static {type} _anonyous_{cou
 arst.UseStaticReadonlyFields(); //生成的字段是 public static readonly {type} _anonyous_{count};
 ```
 
+#### 获取字段和方法脚本
 ```C#
-//通过以下代码获取生成的字段以及初始化方法
+//通过以下代码获取生成的脚本
 arst.FieldsScript;
 arst.MethodScript;
+```
+
+#### 初始化赋值
+```C#
+//初始化赋值
+arst.GetInitMethod(nclass);
+arst.GetInitMethod<T>(nclass);
 ```
 
 生成的脚本可以添加到 Natasha 中进行编译使用。
