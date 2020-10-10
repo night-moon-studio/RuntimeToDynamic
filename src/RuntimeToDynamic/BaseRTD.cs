@@ -8,7 +8,7 @@ using System.Text;
 namespace RuntimeToDynamic
 {
 
-    public class BaseRTD<T> : ALinkTemplate<T> where T : BaseRTD<T>, new() 
+    public class BaseRTD<T> : ALinkTemplate<T> where T : BaseRTD<T>, new()
     {
 
         public readonly ConcurrentDictionary<string, object> NameValueMapping;
@@ -91,9 +91,9 @@ namespace RuntimeToDynamic
         /// <summary>
         /// 获取字段定义字符串
         /// </summary>
-        public string FieldsScript 
-        { 
-            get 
+        public string FieldsScript
+        {
+            get
             {
                 StringBuilder fieldsBuilder = new StringBuilder();
                 string fieldsDefined = "public ";
@@ -124,7 +124,7 @@ namespace RuntimeToDynamic
 
                 }
                 return fieldsBuilder.ToString();
-            } 
+            }
         }
 
 
@@ -140,26 +140,26 @@ namespace RuntimeToDynamic
                 if ((_buildType & R2DBuildType.Static) != 0)
                 {
 
-                    methodDefined =@"public static void SetObject(ConcurrentDictionary<string,object> objs){";
+                    methodDefined = @"public static void SetObject(ConcurrentDictionary<string,object> objs){";
 
                 }
 
                 methodBuilder.AppendLine(methodDefined);
 
-                    foreach (var item in NameValueMapping)
+                foreach (var item in NameValueMapping)
+                {
+
+                    string name = item.Key;
+                    string typeName = NameValueMapping[item.Key].GetType().GetDevelopName();
+                    if (_name_type_mapping.ContainsKey(item.Key))
                     {
-
-                        string name = item.Key;
-                        string typeName = NameValueMapping[item.Key].GetType().GetDevelopName();
-                        if (_name_type_mapping.ContainsKey(item.Key))
-                        {
-                            typeName = _name_type_mapping[item.Key].GetDevelopName();
-                        }
-                        methodBuilder.AppendLine($"{((_buildType & R2DBuildType.Readonly) != 0? name.ReadonlyScript() : name)} = ({typeName})objs[\"{name}\"];");
-
+                        typeName = _name_type_mapping[item.Key].GetDevelopName();
                     }
+                    methodBuilder.AppendLine($"{((_buildType & R2DBuildType.Readonly) != 0 ? name.ReadonlyScript() : name)} = ({typeName})objs[\"{name}\"];");
 
-                
+                }
+
+
                 methodBuilder.AppendLine("}");
                 return methodBuilder.ToString();
             }
@@ -168,7 +168,7 @@ namespace RuntimeToDynamic
 
         public Action GetInitMethod(NClass nClass)
         {
-           var action = nClass.DelegateHandler.Action<ConcurrentDictionary<string, object>>($@"
+            var action = nClass.DelegateHandler.Action<ConcurrentDictionary<string, object>>($@"
 {nClass.NameScript}.SetObject(obj);
 ");
             return () => { action(NameValueMapping); };
@@ -176,12 +176,12 @@ namespace RuntimeToDynamic
 
         public Action<TInstance> GetInitMethod<TInstance>(NClass nClass)
         {
-                var initMethod = nClass.DelegateHandler.Action<TInstance, ConcurrentDictionary<string, object>>($@"
+            var initMethod = nClass.DelegateHandler.Action<TInstance, ConcurrentDictionary<string, object>>($@"
 var realInstance  = ({nClass.NameScript})arg1;
 realInstance.SetObject(arg2);
 ");
-                return (instance) => { initMethod(instance, NameValueMapping); };
-           
+            return (instance) => { initMethod(instance, NameValueMapping); };
+
         }
     }
 
