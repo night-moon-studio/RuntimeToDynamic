@@ -51,7 +51,7 @@ namespace UTProject
             Func<string, int> func1 = item => item.Length+1;
             var runtime = new AnonymousRTD();
             runtime.UseStaticFields();
-            runtime.AddValue(func);
+            var key = runtime.AddValue(func);
             runtime.AddValue(func1);
             runtime.AddValue(func);
             runtime.AddValue("name", "abc");
@@ -67,7 +67,7 @@ namespace UTProject
             action();
 
 
-            int result0 = nClass.DelegateHandler.Func<string,int>($"return {type.Name}._anonymous_1(arg);")("hello");
+            int result0 = nClass.DelegateHandler.Func<string,int>($"return {type.Name}.{key}(arg);")("hello");
             int result1 = nClass.DelegateHandler.Func<string, int>($"return {type.Name}._anonymous_2(arg);")("hello");
             int result2 = nClass.DelegateHandler.Func<string, int>($"return {type.Name}._anonymous_3(arg);")("hello");
             string result3 = nClass.DelegateHandler.Func<string>($"return {type.Name}.name;")();
