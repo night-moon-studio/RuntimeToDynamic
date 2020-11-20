@@ -4,6 +4,7 @@ using System.Text;
 
 namespace RuntimeToDynamic
 {
+    [Flags]
     public enum R2DBuildType
     {
 
